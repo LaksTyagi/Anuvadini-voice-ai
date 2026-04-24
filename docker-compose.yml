@@ -34,8 +34,8 @@ services:
       test: ["CMD-SHELL", "curl -fsS http://localhost:8000/health | grep -q '\"model_loaded\":true'"]
       interval: 10s
       timeout: 5s
-      retries: 120
-      start_period: 20s
+      retries: 180
+      start_period: 120s
     networks:
       - agent_network
 
@@ -57,14 +57,14 @@ services:
   llama_cpp:
     image: ghcr.io/ggml-org/llama.cpp:server
     command:
+      - --model
+      - /models/hub/models--Qwen--Qwen2.5-3B-Instruct-GGUF/snapshots/7dabda4d13d513e3e842b20f0d435c732f172cbe/qwen2.5-3b-instruct-q4_k_m.gguf
       - --host
       - 0.0.0.0
       - --port
       - "11434"
-      - --hf-repo
-      - "${LLAMA_HF_REPO:-unsloth/Qwen3-4B-Instruct-2507-GGUF}"
       - --alias
-      - "${LLAMA_MODEL_ALIAS:-qwen3-4b}"
+      - "${LLAMA_MODEL_ALIAS:-qwen2.5-3b-instruct}"
       - --ctx-size
       - "${LLAMA_CTX_SIZE:-16384}"
     ports:
@@ -80,7 +80,8 @@ services:
       test: ["CMD-SHELL", "curl -fsS http://localhost:11434/v1/models > /dev/null"]
       interval: 10s
       timeout: 5s
-      retries: 30
+      retries: 60
+      start_period: 60s
 
   livekit_agent:
     build:
