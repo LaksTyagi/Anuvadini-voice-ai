@@ -1,26 +1,104 @@
 <div align="center">
   <img src="./frontend/.github/assets/template-light.webp" alt="App Icon" width="80" />
-  <h1>Local Voice AI</h1>
-  <p>This project's goal is to enable anyone to easily build a powerful, private, local voice AI agent.</p>
-  <p>A full-stack, Dockerized AI voice assistant with speech, text, and voice synthesis delivered via WebRTC powered by <a href="https://docs.livekit.io/agents?utm_source=local-voice-ai">LiveKit Agents</a>.</p>
+  <h1>Anuvadini Voice AI - Multilingual Edition</h1>
+  <p>🌍 Powerful, private, local voice AI supporting <strong>Hindi, Punjabi, Tamil, and English</strong></p>
+  <p>A full-stack, Dockerized AI voice assistant with multilingual speech recognition, text processing, and voice synthesis delivered via WebRTC powered by <a href="https://docs.livekit.io/agents?utm_source=local-voice-ai">LiveKit Agents</a>.</p>
 </div>
+
+## 🎯 Features
+
+- ✅ **Multilingual Support**: Hindi (हिंदी), Punjabi (ਪੰਜਾਬੀ), Tamil (தமிழ்), English
+- ✅ **Automatic Language Detection**: Speaks your language automatically
+- ✅ **Real-time Voice Conversation**: Low-latency WebRTC audio
+- ✅ **100% Local & Private**: No cloud APIs, all processing on your machine
+- ✅ **Easy Setup**: One command to run everything
+
+## 🚀 Quick Start
+
+### One Command to Run:
+
+**Windows (PowerShell):**
+```powershell
+.\run.ps1
+```
+
+**Windows (Batch):**
+```batch
+run.bat
+```
+
+**Linux/Mac:**
+```bash
+./run.sh
+```
+
+### Or use Docker Compose directly:
+```bash
+docker-compose up --build
+```
+
+Then open: **http://localhost:3000**
+
+---
+
+## 🌍 Test Each Language
+
+### Hindi (हिंदी):
+```
+"नमस्ते, आप कैसे हैं?"
+"मौसम कैसा है?"
+```
+
+### Punjabi (ਪੰਜਾਬੀ):
+```
+"ਸਤ ਸ੍ਰੀ ਅਕਾਲ"
+"ਤੁਸੀਂ ਕਿਵੇਂ ਹੋ?"
+```
+
+### Tamil (தமிழ்):
+```
+"வணக்கம்"
+"நீங்கள் எப்படி இருக்கிறீர்கள்?"
+```
+
+### English:
+```
+"Hello, how are you?"
+"What can you do?"
+```
+
+---
 
 ## Overview
 
-This repo contains everything needed to run a real-time AI voice assistant locally using:
+This repo contains everything needed to run a real-time multilingual AI voice assistant locally using:
 
 - **LiveKit** for WebRTC realtime audio + rooms.
 - **LiveKit Agents (Python)** to orchestrate the STT → LLM → TTS pipeline.
-- **Nemotron Speech (default)** for speech-to-text, exposed via an OpenAI-compatible API.
-- **Whisper (via VoxBox)** as an optional fallback STT backend.
-- **llama.cpp (llama-server)** for running local LLMs (OpenAI-compatible API).
+- **Whisper Large V3 (default)** for multilingual speech-to-text (99 languages).
+- **Nemotron Speech (optional)** for faster English-only STT.
+- **llama.cpp (llama-server)** running Qwen 2.5 3B (multilingual LLM).
 - **Kokoro** for text-to-speech voice synthesis.
 - **Next.js + Tailwind** frontend UI.
+- **Language Detection** via langdetect for automatic language switching.
 - Fully containerized via Docker Compose.
 
 ## Getting Started
 
-Windows uses the PowerShell command; Linux and OSX use the bash command. Both will prompt you to choose CPU or Nvidia GPU.
+### Method 1: Quick Start Scripts (Recommended)
+
+Windows:
+```powershell
+.\run.ps1
+```
+
+Mac / Linux:
+```bash
+chmod +x run.sh
+./run.sh
+```
+
+### Method 2: Original Scripts
 
 Windows:
 ```bash
@@ -37,15 +115,16 @@ Once it's up, visit [http://localhost:3000](http://localhost:3000) in your brows
 
 ### Notes on models and resources
 
-- The LLM runs via `llama-server` and auto-downloads from Hugging Face on first boot (no manual model download needed).
-- The default repo is `unsloth/Qwen3-4B-Instruct-2507-GGUF` (change `LLAMA_HF_REPO` to use a different model or quant).
-- The API exposes the model under an alias (default `qwen3-4b` via `LLAMA_MODEL_ALIAS`); the agent uses that via `LLAMA_MODEL`.
-- STT defaults to Nemotron (`NEMOTRON_MODEL_NAME`, `NEMOTRON_MODEL_ID`, `STT_*` env vars).
-- If you switch to Whisper fallback, configure `VOXBOX_HF_REPO_ID` and run compose with `--profile whisper`.
-- You can swap out the LLM/STT/TTS URLs to use cloud models if you want (see `livekit_agent/src/agent.py`).
-- The first run downloads a lot of data (often tens of GB) for models and supporting libraries. GPU-enabled images are bigger and take longer.
-- Installing takes a while. On an i9-14900hx it takes about 10 minutes to get everything ready.
-- Ongoing VRAM/RAM usage depends heavily on the model, context size, and GPU offload settings.
+- **Multilingual STT**: Whisper Large V3 (~3GB) auto-downloads on first boot
+- **LLM**: Qwen 2.5 3B (~2GB) runs via `llama-server` and auto-downloads from Hugging Face
+- **TTS**: Kokoro (~500MB) for voice synthesis
+- The default repo is `unsloth/Qwen3-4B-Instruct-2507-GGUF` (change `LLAMA_HF_REPO` to use a different model)
+- STT defaults to Whisper for multilingual support (`STT_PROVIDER=whisper`)
+- Switch to Nemotron for faster English-only: `STT_PROVIDER=nemotron`
+- You can swap out the LLM/STT/TTS URLs to use cloud models if you want (see `livekit_agent/src/agent.py`)
+- The first run downloads a lot of data (often 5-10 GB) for models and supporting libraries
+- Installing takes a while. On an i9-14900hx it takes about 10-15 minutes to get everything ready
+- Ongoing VRAM/RAM usage depends heavily on the model, context size, and GPU offload settings
 
 ### Startup readiness
 
